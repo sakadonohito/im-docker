@@ -67,6 +67,7 @@ RUN chmod 755 /tmp/sample_schema_mysql.txt
 RUN mkdir /var/log/apache2/im
 RUN echo ServerName $HOSTNAME > /etc/apache2/conf-available/fqdn.conf
 RUN a2enconf fqdn
+RUN a2enmod rewrite
 ADD conf/vhost.conf /etc/apache2/sites-available/001-vhost.conf
 RUN a2ensite 001-vhost
 
