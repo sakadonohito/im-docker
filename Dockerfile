@@ -1,7 +1,7 @@
-FROM ubuntu
+FROM ubuntu:14.04
 MAINTAINER sakadonohitio
 
-RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get update -y && apt-get upgrade -y 
 RUN apt-get install -y \
     autoconf \
     automake \
@@ -13,10 +13,9 @@ RUN apt-get install -y \
     g++ \
     git \
 	curl \
-	sysv-rc-conf \
+	sysv-rc-conf \ 
 	re2c \ 
 	libxml2-dev \
-#	libcurl4-nss-dev \
 	libmcrypt-dev \
 	libcurl4-openssl-dev \
 	libjpeg8-dev \
@@ -41,8 +40,7 @@ RUN apt-get install -y \
 	mysql-server \
 	mysql-common \
 	mysql-client \
-
-	apache2 \ 
+	apache2 \
 
     php5 \
     php5-common \
@@ -61,24 +59,20 @@ RUN mysql_install_db
 ADD batch/mysql_batch.sh /tmp/startup.sh
 RUN chmod 755 /tmp/startup.sh
 
-ADD batch/sample_schema_mysql.txt /tmp/sample_schema_mysql.txt
-RUN chmod 755 /tmp/sample_schema_mysql.txt
-
 RUN mkdir /var/log/apache2/im
 RUN echo ServerName $HOSTNAME > /etc/apache2/conf-available/fqdn.conf
 RUN a2enconf fqdn
 RUN a2enmod rewrite
 ADD conf/vhost.conf /etc/apache2/sites-available/001-vhost.conf
 RUN a2ensite 001-vhost
+RUN a2dissite 000-default
 
 ADD conf/timezone.ini /etc/php5/mods-available/timezone.ini
 RUN chmod 644 /etc/php5/mods-available/timezone.ini
 
+ADD www/im /var/www/html/im
 RUN /tmp/startup.sh
 
 EXPOSE 3306 80
 
-RUN service mysql start
-RUN service apache2 start
-
-ENTRYPOINT /etc/init.d/mysql start && /etc/init.d/apache2 start && /bin/bash
+CMD /etc/init.d/mysql start && /etc/init.d/apache2 start && tail -f /dev/null
