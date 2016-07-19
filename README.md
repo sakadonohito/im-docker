@@ -2,5 +2,5 @@
 
 ## Description
 
-まだ、試行錯誤中です。
-未完成です。
+INTER-Mediatorを内包した状態のDockerイメージを作成するテキトーなDockerfileです。
+サンプルのMySQLデータも入れてます。
